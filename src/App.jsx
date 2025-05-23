@@ -20,7 +20,6 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    // Scroll to bottom when messages update
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
@@ -65,28 +64,28 @@ function App() {
   }
 
   return (
-    <div className="container-fluid d-flex flex-column vh-100 px-2 py-2">
-      {/* Header (fixed logo and badge) */}
-      <div className="mb-2">
-        <div className="d-flex align-items-center justify-content-center gap-2 mt-2">
+    <div className="container-fluid px-2 py-2 d-flex flex-column vh-100">
+      {/* Header */}
+      <div className="mb-2" style={{ flexShrink: 0 }}>
+        <div className="d-flex align-items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="32"
-            height="32"
+            width="30"
+            height="30"
             fill="currentColor"
             className="bi bi-bluesky text-info"
             viewBox="0 0 16 16"
           >
             <path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948" />
           </svg>
-          <span className="fw-bold fs-4 ">Social Circle</span>
+          <span className="fw-bold fs-4 text-info">Social Circle</span>
         </div>
         <span className="badge bg-secondary mt-2">You: {username}</span>
       </div>
 
-      {/* Chat container */}
+      {/* Chat + input container */}
       <div className="d-flex flex-column flex-grow-1 overflow-hidden border rounded bg-light">
-        {/* Message display (scrollable) */}
+        {/* Scrollable chat messages */}
         <div className="flex-grow-1 overflow-auto p-2">
           {messages.map((msg, idx) => (
             <div
