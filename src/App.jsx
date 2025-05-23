@@ -10,7 +10,6 @@ function App() {
   const [input, setInput] = useState("");
   const [username, setUsername] = useState("");
   const [hasJoined, setHasJoined] = useState(false);
-
   const messagesEndRef = useRef(null);
 
   useEffect(() => {
@@ -24,9 +23,7 @@ function App() {
   }, [dispatch]);
 
   useEffect(() => {
-    if (messagesEndRef.current) {
-      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
-    }
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
 
   const handleSend = () => {
@@ -70,39 +67,29 @@ function App() {
   }
 
   return (
-    <div
-      className="d-flex flex-column"
-      style={{ height: "100dvh", overflow: "hidden" }}
-    >
+    <div className="container-fluid d-flex flex-column vh-100 px-2 py-2">
       {/* Fixed Header */}
-      <div
-        className="bg-white border-bottom px-3 py-2"
-        style={{
-          position: "sticky",
-          top: 0,
-          zIndex: 10,
-          backgroundColor: "#fff",
-        }}
-      >
-        <div className="d-flex align-items-center gap-2">
+      <div className="sticky-top bg-white py-2 z-3">
+        <div className="d-flex align-items-center justify-content-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="30"
             height="30"
             fill="currentColor"
-            className="bi bi-bluesky text-info"
+            className="bi bi-bluesky"
             viewBox="0 0 16 16"
           >
             <path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948" />
           </svg>
           <span className="fw-bold fs-4 text-info">Social Circle</span>
-          <span className="badge bg-secondary ms-auto">You: {username}</span>
+        </div>
+        <div className="text-center mt-1">
+          <span className="badge bg-secondary">You: {username}</span>
         </div>
       </div>
 
-      {/* Chat Box */}
-      <div className="d-flex flex-column flex-grow-1 bg-light">
-        {/* Scrollable Message Area */}
+      {/* Chat Body */}
+      <div className="d-flex flex-column flex-grow-1 overflow-hidden bg-light border rounded mt-2">
         <div
           className="flex-grow-1 overflow-auto p-2"
           style={{ minHeight: 0 }}
@@ -130,8 +117,8 @@ function App() {
                   marginRight: msg.sender === username ? "0" : "25%",
                 }}
               >
-                <strong>{msg.sender === username ? "You" : msg.sender}</strong>
-                : {msg.text}
+                <strong>{msg.sender === username ? "You" : msg.sender}</strong>:{" "}
+                {msg.text}
                 <div
                   className="text-muted mt-1 float-end"
                   style={{ fontSize: "0.75rem" }}
