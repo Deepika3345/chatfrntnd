@@ -1,5 +1,4 @@
-// src/App.jsx
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import socket from "./features/chattools/chatServices";
 import { sendMessage, receiveMessage } from "./features/chattools/chatSlice";
@@ -10,16 +9,20 @@ function App() {
   const [input, setInput] = useState("");
   const [username, setUsername] = useState("");
   const [hasJoined, setHasJoined] = useState(false);
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     socket.on("receive_message", (message) => {
       dispatch(receiveMessage(message));
     });
 
-    return () => {
-      socket.off("receive_message");
-    };
+    return () => socket.off("receive_message");
   }, [dispatch]);
+
+  useEffect(() => {
+    // Scroll to bottom when messages update
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [messages]);
 
   const handleSend = () => {
     if (!input.trim()) return;
@@ -63,30 +66,28 @@ function App() {
 
   return (
     <div className="container-fluid d-flex flex-column vh-100 px-2 py-2">
-      {/* <h4 className="text-center mb-2">Live Chat</h4> */}
-      <div className="d-flex align-items-center justify-content-center gap-2 mt-2">
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="30"
-          height="30"
-          fill="currentColor"
-          className="bi bi-bluesky"
-          viewBox="0 0 16 16"
-        >
-          <path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948" />
-        </svg>
-        <span className="fw-bold fs-4 text-info">Social Circle</span>
+      {/* Header (fixed logo and badge) */}
+      <div className="mb-2">
+        <div className="d-flex align-items-center justify-content-center gap-2 mt-2">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="32"
+            height="32"
+            fill="currentColor"
+            className="bi bi-bluesky text-info"
+            viewBox="0 0 16 16"
+          >
+            <path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948" />
+          </svg>
+          <span className="fw-bold fs-4 ">Social Circle</span>
+        </div>
+        <span className="badge bg-secondary mt-2">You: {username}</span>
       </div>
 
-      <div className="mb-3">
-        <span className="badge bg-secondary">You: {username}</span>
-      </div>
-
+      {/* Chat container */}
       <div className="d-flex flex-column flex-grow-1 overflow-hidden border rounded bg-light">
-        <div
-          className="flex-grow-1 overflow-auto p-2 border"
-          style={{ minHeight: 0 }}
-        >
+        {/* Message display (scrollable) */}
+        <div className="flex-grow-1 overflow-auto p-2">
           {messages.map((msg, idx) => (
             <div
               key={idx}
@@ -97,7 +98,7 @@ function App() {
               }`}
             >
               <div
-                className={`p-2 rounded ${
+                className={`p-2 rounded shadow-sm ${
                   msg.sender === username
                     ? "bg-primary text-white"
                     : "bg-white border"
@@ -121,8 +122,10 @@ function App() {
               </div>
             </div>
           ))}
+          <div ref={messagesEndRef} />
         </div>
 
+        {/* Input area */}
         <div className="input-group p-2 border-top bg-white">
           <input
             type="text"
