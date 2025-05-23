@@ -64,9 +64,12 @@ function App() {
   }
 
   return (
-    <div className="container-fluid px-2 py-2 d-flex flex-column vh-100">
+    <div
+      className="container-fluid d-flex flex-column px-2"
+      style={{ height: "100dvh" }}
+    >
       {/* Header */}
-      <div className="mb-2" style={{ flexShrink: 0 }}>
+      <div className="pt-2 pb-1" style={{ flexShrink: 0 }}>
         <div className="d-flex align-items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -80,73 +83,75 @@ function App() {
           </svg>
           <span className="fw-bold fs-4 text-info">Social Circle</span>
         </div>
-        <span className="badge bg-secondary mt-2">You: {username}</span>
+        <div className="mt-1">
+          <span className="badge bg-secondary">You: {username}</span>
+        </div>
       </div>
 
-      {/* Chat + input container */}
-      <div className="d-flex flex-column flex-grow-1 overflow-hidden border rounded bg-light">
-        {/* Scrollable chat messages */}
-        <div className="flex-grow-1 overflow-auto p-2">
-          {messages.map((msg, idx) => (
+      {/* Chat Area */}
+      <div
+        className="flex-grow-1 overflow-auto border rounded bg-light my-2 p-2"
+        style={{ minHeight: 0 }}
+      >
+        {messages.map((msg, idx) => (
+          <div
+            key={idx}
+            className={`d-flex mb-2 ${
+              msg.sender === username
+                ? "justify-content-end"
+                : "justify-content-start"
+            }`}
+          >
             <div
-              key={idx}
-              className={`d-flex mb-2 ${
+              className={`p-2 rounded shadow-sm ${
                 msg.sender === username
-                  ? "justify-content-end"
-                  : "justify-content-start"
+                  ? "bg-primary text-white"
+                  : "bg-white border"
               }`}
+              style={{
+                maxWidth: "75%",
+                minWidth: "25%",
+                wordBreak: "break-word",
+                marginLeft: msg.sender === username ? "25%" : "0",
+                marginRight: msg.sender === username ? "0" : "25%",
+              }}
             >
+              <strong>{msg.sender === username ? "You" : msg.sender}</strong>:{" "}
+              {msg.text}
               <div
-                className={`p-2 rounded shadow-sm ${
-                  msg.sender === username
-                    ? "bg-primary text-white"
-                    : "bg-white border"
-                }`}
-                style={{
-                  maxWidth: "75%",
-                  minWidth: "25%",
-                  wordBreak: "break-word",
-                  marginLeft: msg.sender === username ? "25%" : "0",
-                  marginRight: msg.sender === username ? "0" : "25%",
-                }}
+                className="text-muted mt-1 float-end"
+                style={{ fontSize: "0.75rem" }}
               >
-                <strong>{msg.sender === username ? "You" : msg.sender}</strong>:{" "}
-                {msg.text}
-                <div
-                  className="text-muted mt-1 float-end"
-                  style={{ fontSize: "0.75rem" }}
-                >
-                  {msg.timestamp}
-                </div>
+                {msg.timestamp}
               </div>
             </div>
-          ))}
-          <div ref={messagesEndRef} />
-        </div>
+          </div>
+        ))}
+        <div ref={messagesEndRef} />
+      </div>
 
-        {/* Input area */}
-        <div className="input-group p-2 border-top bg-white">
-          <input
-            type="text"
-            className="form-control"
-            placeholder="Type a message"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={(e) => e.key === "Enter" && handleSend()}
-          />
-          <button className="btn btn-success" onClick={handleSend}>
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="16"
-              height="16"
-              fill="currentColor"
-              className="bi bi-send"
-              viewBox="0 0 16 16"
-            >
-              <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
-            </svg>
-          </button>
-        </div>
+      {/* Input */}
+      <div className="input-group border-top bg-white p-2" style={{ flexShrink: 0 }}>
+        <input
+          type="text"
+          className="form-control"
+          placeholder="Type a message"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyDown={(e) => e.key === "Enter" && handleSend()}
+        />
+        <button className="btn btn-success" onClick={handleSend}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="16"
+            height="16"
+            fill="currentColor"
+            className="bi bi-send"
+            viewBox="0 0 16 16"
+          >
+            <path d="M15.854.146a.5.5 0 0 1 .11.54l-5.819 14.547a.75.75 0 0 1-1.329.124l-3.178-4.995L.643 7.184a.75.75 0 0 1 .124-1.33L15.314.037a.5.5 0 0 1 .54.11ZM6.636 10.07l2.761 4.338L14.13 2.576zm6.787-8.201L1.591 6.602l4.339 2.76z" />
+          </svg>
+        </button>
       </div>
     </div>
   );
