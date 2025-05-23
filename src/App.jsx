@@ -16,7 +16,9 @@ function App() {
       dispatch(receiveMessage(message));
     });
 
-    return () => socket.off("receive_message");
+    return () => {
+      socket.off("receive_message");
+    };
   }, [dispatch]);
 
   useEffect(() => {
@@ -64,49 +66,39 @@ function App() {
   }
 
   return (
-    <div
-      className="container-fluid d-flex flex-column px-2"
-      style={{ height: "100dvh" }}
-    >
+    <div className="d-flex flex-column" style={{ height: "100dvh" }}>
       {/* Header */}
-      <div className="pt-2 pb-1" style={{ flexShrink: 0 }}>
+      <div className="bg-white border-bottom px-3 py-2" style={{ flexShrink: 0 }}>
         <div className="d-flex align-items-center gap-2">
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            width="30"
-            height="30"
+            width="28"
+            height="28"
             fill="currentColor"
             className="bi bi-bluesky text-info"
             viewBox="0 0 16 16"
           >
             <path d="M3.468 1.948C5.303 3.325 7.276 6.118 8 7.616c.725-1.498 2.698-4.29 4.532-5.668C13.855.955 16 .186 16 2.632c0 .489-.28 4.105-.444 4.692-.572 2.04-2.653 2.561-4.504 2.246 3.236.551 4.06 2.375 2.281 4.2-3.376 3.464-4.852-.87-5.23-1.98-.07-.204-.103-.3-.103-.218 0-.081-.033.014-.102.218-.379 1.11-1.855 5.444-5.231 1.98-1.778-1.825-.955-3.65 2.28-4.2-1.85.315-3.932-.205-4.503-2.246C.28 6.737 0 3.12 0 2.632 0 .186 2.145.955 3.468 1.948" />
           </svg>
-          <span className="fw-bold fs-4 text-info">Social Circle</span>
+          <span className="fw-bold fs-5 text-info">Social Circle</span>
         </div>
-        <div className="mt-1">
+        <div className="mt-2">
           <span className="badge bg-secondary">You: {username}</span>
         </div>
       </div>
 
-      {/* Chat Area */}
-      <div
-        className="flex-grow-1 overflow-auto border rounded bg-light my-2 p-2"
-        style={{ minHeight: 0 }}
-      >
+      {/* Messages Scrollable */}
+      <div className="flex-grow-1 overflow-auto p-2 bg-light">
         {messages.map((msg, idx) => (
           <div
             key={idx}
             className={`d-flex mb-2 ${
-              msg.sender === username
-                ? "justify-content-end"
-                : "justify-content-start"
+              msg.sender === username ? "justify-content-end" : "justify-content-start"
             }`}
           >
             <div
-              className={`p-2 rounded shadow-sm ${
-                msg.sender === username
-                  ? "bg-primary text-white"
-                  : "bg-white border"
+              className={`p-2 rounded ${
+                msg.sender === username ? "bg-primary text-white" : "bg-white border"
               }`}
               style={{
                 maxWidth: "75%",
@@ -116,8 +108,7 @@ function App() {
                 marginRight: msg.sender === username ? "0" : "25%",
               }}
             >
-              <strong>{msg.sender === username ? "You" : msg.sender}</strong>:{" "}
-              {msg.text}
+              <strong>{msg.sender === username ? "You" : msg.sender}</strong>: {msg.text}
               <div
                 className="text-muted mt-1 float-end"
                 style={{ fontSize: "0.75rem" }}
@@ -130,7 +121,7 @@ function App() {
         <div ref={messagesEndRef} />
       </div>
 
-      {/* Input */}
+      {/* Input Box */}
       <div className="input-group border-top bg-white p-2" style={{ flexShrink: 0 }}>
         <input
           type="text"
